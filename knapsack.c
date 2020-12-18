@@ -229,12 +229,21 @@ double search(int index, const Itemset *list, double capacity, unsigned char *fl
 
   // 以下は再帰の更新式: 現在のindex の品物を使う or 使わないで分岐し、index をインクリメントして再帰的にsearch() を実行する
   
+
   flags[index] = 0;
   const double v0 = search(index+1, list, capacity, flags, sum_v, sum_w);
 
-  flags[index] = 1;
-  const double v1 = search(index+1, list, capacity, flags, sum_v + list->item[index].value, sum_w + list->item[index].weight);
+  double v1;
+  if(sum_w + list->item[index].weight <= capacity){
+    flags[index] = 1;
+    v1 = search(index + 1, list,capacity,flags,sum_v + list->item[index].value,sum_w + list->item[index].weight);
+  }else{
+    v1 = 0;
+  }
+
+
 
   // 使った場合の結果と使わなかった場合の結果を比較して返す
   return (v0 > v1) ? v0 : v1;
+  
 }
